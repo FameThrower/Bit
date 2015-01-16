@@ -5,7 +5,7 @@
 #define THREE_DIR	0x04
 #define TWO_DIR		0x02
 #define ONE_DIR		0x01
-#define NO_DIR		0x00
+#define NO_DIR		0x00 //hello
 #define NORTH		1
 #define SOUTH		2
 #define EAST		3
