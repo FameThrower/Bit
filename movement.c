@@ -91,14 +91,13 @@ void discover(int dir, int row, int col){
 //	3		1
 //		2
 int move(int direction){
-	int i = facing - direction;
 	if(direction != facing){
 		//direction is 180 degrees from where the robot is facing
 		if(((facing-direction) % 4) == 2){
 			turnAround();
 		}
 		//direction is 90 degrees to the right of the robot
-		else if((facing - direction) < 0){
+		else if((facing - direction) < 0 || (facing == 3 && direction == 0)){
 			turnCW();
 		//direction is 90 degrees to the left of the robot
 		}else{
