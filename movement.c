@@ -7,7 +7,7 @@
 #define ONE_DIR		0x01
 #define NO_DIR		0x00
 
-#define NORTH		0         	  //		0
+#define NORTH		0       	  //		0
 #define SOUTH		2		  //	3		1
 #define EAST		1		  //		2				 
 #define WEST		3
@@ -15,14 +15,11 @@
 #define startr 		3//start row
 #define startc 		2//start column
 
-#define WALL		6//largest dist to wall
+#define WALL		6//largest dist to wall in inches
 #define SQUARE		12 //distance from one square to the next in inches
 
 struct ryans{
-	int noWallN;
-	int noWallS;
-	int noWallE;
-	int noWallW;//north south east and west orientation.
+	int noWall[4]; //north = 0, east = 1, south = 2, west = 3
 	int prev;
 	char opening;
 };
@@ -34,10 +31,10 @@ void init(){
 	int i,x;
 	for(i = 0; i<7; i++){
 		for(x=0; x<7; x++){
-			ryan[i][x].noWallN = 0;
-			ryan[i][x].noWallS = 0;
-			ryan[i][x].noWallE = 0;
-			ryan[i][x].noWallW = 0;
+			ryan[i][x].noWall[NORTH] = 0;
+			ryan[i][x].noWall[SOUTH] = 0;
+			ryan[i][x].noWall[EAST] = 0;
+			ryan[i][x].noWall[WEST] = 0;
 			ryan[i][x].prev = 0;
 			ryan[i][x].opening = FOUR_DIR;
 		}
@@ -50,28 +47,28 @@ void discover(int dir, int row, int col){
 		ryan[row][col].prev = dir;
 	}
 	isWall(row,col);
-	if(ryan[row][col].noWallE && 
+	if(ryan[row][col].noWall[EAST] && 
 	ryan[row][col].opening && 
 	!(dir & WEST)) {
 	        ryan[row][col].opening >> 1;
 		move(EAST);
 		discover(WEST, ++row,col);
 	}
-	if(ryan[row][col].noWallN && 
+	if(ryan[row][col].noWall[NORTH] && 
 	ryan[row][col].opening && 
 	!(dir & SOUTH)) {
 		ryan[row][col].opening >> 1;
 		move(NORTH);
 		discover(SOUTH, row,++col);
 	}
-	if(ryan[row][col].noWallW && 
+	if(ryan[row][col].noWall[WEST] && 
 	ryan[row][col].opening && 
 	!(dir & EAST)) {
 		ryan[row][col].opening >> 1;
 		move(WEST);
 		discover(EAST, --row,col);	
 	}
-	if(ryan[row][col].noWallS && 
+	if(ryan[row][col].noWall[SOUTH] && 
 	ryan[row][col].opening && 
 	!(dir & NORTH)) {
 		ryan[row][col].opening >> 1;
@@ -111,57 +108,68 @@ int move(int direction){
 }
 
 //turn 90 degrees right, then update facing variable 
-void turnCW(){	
+void turnCW(void){	
 	
 	
 	facing = (facing+1) % 4;
 }
 
 //turn 90 degrees right, then update facing variable 
-void turnCCW(){
+void turnCCW(void){
 	
 	
 	facing = (facing-1) % 4;
 }
 
 //turn 180 degrees, then update facing variable
-void turnAround(){
+void turnAround(void){
 	
 	
 	facing = (facing+2) % 4;
 }
 
-void moveForward(){ //move 12 inches forward
+void moveForward(void){ //move 12 inches forward
 	
 	
 }
 
+//determines if a wall exists to the front, left, and right of the robot
 void isWall(int row, int col){
 	int i;
-	i = getDistN();
+	
+	i = getDistFront(facing);
 	if(i > WALL) {
-		ryan[row][col].noWallN = 1;
+		ryan[row][col].noWall[facing] = 1;
 	}else{
 		ryan[row][col].opening >> 1;
 	}
-	i = getDistS();
-        if(i > WALL) {
-		ryan[row][col].noWallS = 1;
+	
+	i = getDistLeft((facing-1) % 4);
+    if(i > WALL) {
+		ryan[row][col].noWall[(facing-1) % 4] = 1;
 	}else{
-                ryan[row][col].opening >> 1;
-        }
-	i = getDistE();
-        if(i > WALL) {
-		ryan[row][col].noWallE = 1;
+        ryan[row][col].opening >> 1;
+    }
+	
+	i = getDistRight((facing+1) % 4);
+    if(i > WALL) {
+		ryan[row][col].noWall[(facing+1) % 4] = 1;
 	}else{
-                ryan[row][col].opening >> 1;
-        }
-	i = getDistW();
-	if(i > WALL) {
-		ryan[row][col].noWallW = 1;
-	}else{
-                ryan[row][col].opening >> 1;
-        }
+        ryan[row][col].opening >> 1;
+    }
+}
+
+//uses sensor on the front of the robot and returns distance to nearest wall
+int getDistFront(int direction){
+	return 0;
+}
+//uses sensor on the robot's left side and returns distance to nearest wall
+int getDistLeft(int direction){
+	return 0;
+}
+//uses sensor on the robot's right side and returns distance to nearest wall
+int getDistRight(int direction){
+	return 0;
 }
 
 int main(){
