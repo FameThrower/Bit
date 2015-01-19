@@ -12,16 +12,16 @@
 #define EAST		1		  //		2				 
 #define WEST		3
 
-#define startr 		3//start row
-#define startc 		2//start column
+#define startr 		3  //start row
+#define startc 		2  //start column
 
-#define WALL		6//largest dist to wall in inches
+#define WALL		6  //largest dist to wall in inches
 #define SQUARE		12 //distance from one square to the next in inches
 
 struct ryans{
 	int noWall[4]; //north = 0, east = 1, south = 2, west = 3
 	
-	int prevRow; //previous row , column, direction. used for backtracking
+	int prevRow;   //previous row , column, direction. used for backtracking
 	int prevCol;
 	int prevDir;
 	
@@ -51,7 +51,7 @@ void init(){
 
 void discover(int dir, int row, int col){
 	ryan[row][col].opening >> 1;
-	if(ryan[row][col].newSquare == 1){ //robot has not been to his square before, so check for walls
+	if(ryan[row][col].newSquare == 1){ //robot has not been to this square before, so check for walls
 		isWall(row,col);
 		ryan[row][col].newSquare == 0;
 	}
@@ -158,7 +158,7 @@ void turnCW(void){
 	facing = (facing+1) % 4;
 }
 
-//turn 90 degrees right, then update facing variable 
+//turn 90 degrees left, then update facing variable 
 void turnCCW(void){
 	
 	
@@ -181,21 +181,21 @@ void moveForward(void){ //move 12 inches forward
 void isWall(int row, int col){
 	int i;
 	
-	i = getDistFront(facing);
+	i = getDistFront();
 	if(i > WALL) {
 		ryan[row][col].noWall[facing] = 1;
 	}else{
 		ryan[row][col].opening >> 1;
 	}
 	
-	i = getDistLeft((facing-1) % 4);
+	i = getDistLeft();
     	if(i > WALL) {
 		ryan[row][col].noWall[(facing-1) % 4] = 1;
 	}else{
         	ryan[row][col].opening >> 1;
     	}
 	
-	i = getDistRight((facing+1) % 4);
+	i = getDistRight();
     	if(i > WALL) {
 		ryan[row][col].noWall[(facing+1) % 4] = 1;
 	}else{
@@ -204,21 +204,24 @@ void isWall(int row, int col){
 }
 
 //uses sensor on the front of the robot and returns distance to nearest wall
-int getDistFront(int direction){
+//direction = facing
+int getDistFront(void){
 	return 0;
 }
 //uses sensor on the robot's left side and returns distance to nearest wall
-int getDistLeft(int direction){
+//direction = (facing - 1) % 4
+int getDistLeft(void){
 	return 0;
 }
 //uses sensor on the robot's right side and returns distance to nearest wall
-int getDistRight(int direction){
+//direction = (facing + 1) % 4
+int getDistRight(void){
 	return 0;
 }
 
 int main(){
 	init();
-	discover(-1, startr,startc);
+	discover(2, startr,startc);
 
 
 
