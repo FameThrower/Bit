@@ -33,3 +33,5 @@ Current work to complete/errors to look for
     Does it move in a straight line?
     Can we interrupt its movement and detemine with 1"> certainty
 6) (Add to this list)
+=============================================================
+6) add all data sheets
