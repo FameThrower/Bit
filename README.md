@@ -1,5 +1,13 @@
 # Bit
-senior project IEEE 2015 Robot Competition
+####Senior Project: IEEE 2015 Robot Competition
+In order of importance:  
+1.**Ryan Brinkley**  
+2. Ben Hanley   
+3. Alex Bridges  
+4...........  
+...........  
+........  
+27. Mitch *"the midget"* McKay
 
 ===========================================================
 
@@ -18,7 +26,7 @@ handled?
 5) make course  
 6) build it.  
 
-DUE FEB 7  
+**DUE FEB 7**  
 7) Make a paper for the competition (text mitch for info if you didnt already receive it).  
 
 
