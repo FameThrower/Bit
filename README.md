@@ -12,7 +12,7 @@ handled?
 1) get hotel for competition (sounds like IEEE group wll handle it)  
 2) get rental vehicle for competition (sounds like IEEE group will handle it)  
 
-**OMFG** GET TO IT
+~~**OMFG**~~ **golly jeebers guys**, GET TO IT
 3) order letter kit @ Chelcie.Lanaux@iv-aga.com  
 4) complete intent to compete forum  
 5) make course  
