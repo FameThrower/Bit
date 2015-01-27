@@ -16,7 +16,8 @@ How's it going guys. This is our repository so that we can keep all code up to d
 ==========================================================
 
 This is a to do list for our group.  
-handled?  
+
+**handled?**  
 1) get hotel for competition (sounds like IEEE group wll handle it)  
 2) get rental vehicle for competition (sounds like IEEE group will handle it)  
 
@@ -37,9 +38,13 @@ Current work to complete/errors to look for
 4) sensors.... we need blackline sensors and code for them to work. i.e. isblackline() 1 or 0 response  
                SRF 08 code so it will respond with a distance  
 5) movement code testing and development.  
-    Does it move the exact distance we command it too?  
+               Does it move the exact distance we command it too?  
     Does it move in a straight line?  
     Can we interrupt its movement and detemine with 1"> certainty  
-6) (Add to this list)  
-=============================================================  
-6) add all data sheets  
+6) add all data sheets   
+7) Beaglebone maze code  
+    Still need to remember the critical path through the maze  
+    How to get from search mode to critical path mode - maybe as simple as  
+    on reset, pressing button the first time. Once every path is explored,  
+    robot waits until button is pressed again for critical path mode??  
+8) Don't forget LEDs and USB stuff
