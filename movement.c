@@ -12,19 +12,15 @@
 #define EAST		1		  //		2				 
 #define WEST		3
 
-#define startr 		3  //start row
-#define startc 		2  //start column
+#define startRow	7  //start row
+#define startCol	7  //start column
 
 #define WALL		6  //largest dist to wall in inches
 #define SQUARE		12 //distance from one square to the next in inches
 
 struct ryans{
 	int noWall[4]; //north = 0, east = 1, south = 2, west = 3
-	
-	int prevRow;   //previous row , column, direction. used for backtracking
-	int prevCol;
-	int prevDir;
-	
+
 	char opening;
 	char newSquare; //first time entering new square, so use sensors to determine wall placement
 };
@@ -40,9 +36,6 @@ void init(){
 			ryan[i][x].noWall[SOUTH] = 0;
 			ryan[i][x].noWall[EAST] = 0;
 			ryan[i][x].noWall[WEST] = 0;
-			ryan[i][x].prevRow = -1;
-			ryan[i][x].prevCol = -1;
-			ryan[i][x].prevDir = -1;
 			ryan[i][x].opening = FOUR_DIR;
 			ryan[i][x].newSquare = 1;
 		}
@@ -56,70 +49,46 @@ void discover(int dir, int row, int col){
 		ryan[row][col].newSquare == 0;
 	}
 	
-	//moving east
+	//moving EAST
 	if(ryan[row][col].noWall[EAST] &&  
 	ryan[row][col].opening && 
-	!(dir & WEST)) {
+	!(dir & WEST)) { //if you just went WEST (came from the EAST), don't go east til last(backtracking direction)
 	        ryan[row][col].opening >> 1;
 		move(EAST);
-		
-		if(ryan[row+1][col].prevRow < 0){ //keep track of previous row/col for backtracking
-			ryan[row+1][col].prevRow = row;
-			ryan[row+1][col].prevCol = col;
-			ryan[row][col-1].prevDir = WEST;
-		}
-		discover(WEST, ++row,col);
+		discover(EAST, ++row,col);
 	}
 	
-	//moving north
+	//moving NORTH
 	if(ryan[row][col].noWall[NORTH] && 
 	ryan[row][col].opening && 
-	!(dir & SOUTH)) {
+	!(dir & SOUTH)) {//if you just went SOUTH (came from the NORTH), don't go east (backtracking direction)
 		ryan[row][col].opening >> 1;
 		move(NORTH);
-		
-		if(ryan[row][col+1].prevRow < 0){ //keep track of previous row/col for backtracking
-			ryan[row][col+1].prevRow = row;
-			ryan[row][col+1].prevCol = col;
-			ryan[row][col-1].prevDir = SOUTH;
-		}
-		discover(SOUTH, row,++col);
+		discover(NORTH, row,++col);
 	}
 	
-	//moving west
+	//moving WEST
 	if(ryan[row][col].noWall[WEST] && 
 	ryan[row][col].opening && 
 	!(dir & EAST)) {
 		ryan[row][col].opening >> 1;
 		move(WEST);
-		
-		if(ryan[row-1][col].prevRow < 0){ //keep track of previous row/col for backtracking
-			ryan[row-1][col].prevRow = row;
-			ryan[row-1][col].prevCol = col;
-			ryan[row][col-1].prevDir = EAST;
-		}
-		discover(EAST, --row,col);	
+		discover(WEST, --row,col);	
 	}
 	
-	//moving south
+	//moving SOUTH
 	if(ryan[row][col].noWall[SOUTH] && 
 	ryan[row][col].opening && 
 	!(dir & NORTH)) {
 		ryan[row][col].opening >> 1;
 		move(SOUTH);
-		
-		if(ryan[row][col-1].prevRow < 0){ //keep track of previous row/col for backtracking
-			ryan[row][col-1].prevRow = row;
-			ryan[row][col-1].prevCol = col;
-			ryan[row][col-1].prevDir = NORTH;
-		}
-		discover(NORTH, row,--col);
+		discover(SOUTH, row,--col);
 	}
 	
-	//backtracking if there are no more squares to explore from the current square
+	//backtracking if there are no more squares to explore from the current square, 
+	//and moves up the recursion stack
 	if(!ryan[row][col].opening){
-		move(ryan[row][col].prevDir);
-		discover((ryan[row][col].prevDir + 2) % 4,ryan[row][col].prevRow,ryan[row][col].prevCol);
+		move((dir + 2) % 4);
 	} 
 	
 }
@@ -201,6 +170,8 @@ void isWall(int row, int col){
 	}else{
         	ryan[row][col].opening >> 1;
     	}
+    	//when a new square is entered, there is never a wall behind (except at the beginning)
+        if(row!=startRow && col!=startCol)ryan[row][col].noWall[(facing+2) % 4] = 1;
 }
 
 //uses sensor on the front of the robot and returns distance to nearest wall
