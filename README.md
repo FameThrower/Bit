@@ -1,12 +1,13 @@
 # Bit
 ####Senior Project: IEEE 2015 Robot Competition
+**Just ordered the last srf08 and additional wheels so dont order them people!**  
 In order of importance:  
 1.**Ryan Brinkley**  
 2. Ben Hanley   
 3. Alex Bridges  
 4...........  
 ...........  
-........  
+..........  
 27. Mitch *"the midget"* McKay
 
 ===========================================================
