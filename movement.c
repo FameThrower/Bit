@@ -14,6 +14,8 @@
 
 #define startRow	7  //start row
 #define startCol	7  //start column
+#define endRow		1  //end row
+#define endCol		1  //end col
 
 #define WALL		6  //largest dist to wall in inches
 #define SQUARE		12 //distance from one square to the next in inches
@@ -24,6 +26,11 @@ struct ryans{
 	char opening;
 	char newSquare; //first time entering new square, so use sensors to determine wall placement
 };
+
+int critPathArr[50]; //used for determining critical path
+int path_size;
+char path_found; //boolean used to stop looking for critical path once the endRow,endCol is reached
+
 
 int facing = NORTH; //robot starts the maze facing NORTH
 struct ryans ryan[7][7];
@@ -40,10 +47,20 @@ void init(){
 			ryan[i][x].newSquare = 1;
 		}
 	}
+	for(i = 0; i < 50; i++){
+		critPathArr[i] = -1;	
+	}
+	path_size = 0;
 }
 
+//used for PART 1 of the maze - searching
 void discover(int dir, int row, int col){
 	ryan[row][col].opening >> 1;
+	if(row==endRow && col==endCol){ //end square reached, so stop searching for critical path
+		path_found == 1;	
+	}
+	if(!path_found)path_size++; //go to next 
+	
 	if(ryan[row][col].newSquare == 1){ //robot has not been to this square before, so check for walls
 		isWall(row,col);
 		ryan[row][col].newSquare == 0;
@@ -53,6 +70,8 @@ void discover(int dir, int row, int col){
 	if(ryan[row][col].noWall[EAST] &&  
 	ryan[row][col].opening && 
 	!(dir & WEST)) { //if you just went WEST (came from the EAST), don't go east til last(backtracking direction)
+	        if(!path_found)critPathArr[path_size] = EAST;
+	        
 	        ryan[row][col].opening >> 1;
 		move(EAST);
 		discover(EAST, ++row,col);
@@ -62,6 +81,8 @@ void discover(int dir, int row, int col){
 	if(ryan[row][col].noWall[NORTH] && 
 	ryan[row][col].opening && 
 	!(dir & SOUTH)) {//if you just went SOUTH (came from the NORTH), don't go east (backtracking direction)
+		if(!path_found)critPathArr[path_size] = NORTH;
+		
 		ryan[row][col].opening >> 1;
 		move(NORTH);
 		discover(NORTH, row,++col);
@@ -71,6 +92,8 @@ void discover(int dir, int row, int col){
 	if(ryan[row][col].noWall[WEST] && 
 	ryan[row][col].opening && 
 	!(dir & EAST)) {
+		if(!path_found)critPathArr[path_size] = WEST;
+		
 		ryan[row][col].opening >> 1;
 		move(WEST);
 		discover(WEST, --row,col);	
@@ -80,6 +103,8 @@ void discover(int dir, int row, int col){
 	if(ryan[row][col].noWall[SOUTH] && 
 	ryan[row][col].opening && 
 	!(dir & NORTH)) {
+		if(!path_found)critPathArr[path_size] = SOUTH;
+		
 		ryan[row][col].opening >> 1;
 		move(SOUTH);
 		discover(SOUTH, row,--col);
@@ -88,9 +113,17 @@ void discover(int dir, int row, int col){
 	//backtracking if there are no more squares to explore from the current square, 
 	//and moves up the recursion stack
 	if(!ryan[row][col].opening){
+		path_size--; //this square is not part of the critical path since it
 		move((dir + 2) % 4);
 	} 
 	
+}
+void takeCriticalPath(void){
+	int i = 0;
+	while(critPathArr[i] >= 0){ // a -1 means the path is over
+		move(critPathArr[i]);
+		i++;
+	}
 }
 
 //keep track of direction robot is facing
@@ -192,8 +225,14 @@ int getDistRight(void){
 
 int main(){
 	init();
-	discover(2, startr,startc);
+	
+	//wait here until a button on the robot is pushed
+	
+	discover(2, startRow,startCol);
 
+	//wait here until the button is pushed again
+	
+	takeCriticalPath();
 
 
 	return 0;
