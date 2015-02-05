@@ -1,12 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-#define FOUR_DIR	0x08
-#define THREE_DIR	0x04
-#define TWO_DIR		0x02
-#define ONE_DIR		0x01
-#define NO_DIR		0x00
-
 #define NORTH		0       	  //		0
 #define SOUTH		2		  //	3		1
 #define EAST		1		  //		2				 
@@ -23,7 +17,6 @@
 struct ryans{
 	int noWall[4]; //north = 0, east = 1, south = 2, west = 3
 
-	char opening;
 	char newSquare; //first time entering new square, so use sensors to determine wall placement
 };
 
@@ -55,7 +48,7 @@ void init(){
 
 //used for PART 1 of the maze - searching
 void discover(int dir, int row, int col){
-	ryan[row][col].opening >> 1;
+
 	if(row==endRow && col==endCol){ //end square reached, so stop searching for critical path
 		path_found == 1;	
 	}
@@ -68,7 +61,6 @@ void discover(int dir, int row, int col){
 	
 	//moving EAST
 	if(ryan[row][col].noWall[EAST] &&  
-	ryan[row][col].opening && 
 	!(dir & WEST)) { //if you just went WEST (came from the EAST), don't go east til last(backtracking direction)
 	        if(!path_found)critPathArr[path_size] = EAST;
 	        
@@ -79,29 +71,24 @@ void discover(int dir, int row, int col){
 	
 	//moving NORTH
 	if(ryan[row][col].noWall[NORTH] && 
-	ryan[row][col].opening && 
 	!(dir & SOUTH)) {//if you just went SOUTH (came from the NORTH), don't go east (backtracking direction)
 		if(!path_found)critPathArr[path_size] = NORTH;
 		
-		ryan[row][col].opening >> 1;
 		move(NORTH);
 		discover(NORTH, row,++col);
 	}
 	
 	//moving WEST
 	if(ryan[row][col].noWall[WEST] && 
-	ryan[row][col].opening && 
 	!(dir & EAST)) {
 		if(!path_found)critPathArr[path_size] = WEST;
 		
-		ryan[row][col].opening >> 1;
 		move(WEST);
 		discover(WEST, --row,col);	
 	}
 	
 	//moving SOUTH
 	if(ryan[row][col].noWall[SOUTH] && 
-	ryan[row][col].opening && 
 	!(dir & NORTH)) {
 		if(!path_found)critPathArr[path_size] = SOUTH;
 		
@@ -112,10 +99,8 @@ void discover(int dir, int row, int col){
 	
 	//backtracking if there are no more squares to explore from the current square, 
 	//and moves up the recursion stack
-	if(!ryan[row][col].opening){
-		path_size--; //this square is not part of the critical path since it
-		move((dir + 2) % 4);
-	} 
+	if(!path_found)path_size--; //this square is not part of the critical path since it
+	move((dir + 2) % 4);
 	
 }
 void takeCriticalPath(void){
@@ -186,23 +171,17 @@ void isWall(int row, int col){
 	i = getDistFront();
 	if(i > WALL) {
 		ryan[row][col].noWall[facing] = 1;
-	}else{
-		ryan[row][col].opening >> 1;
 	}
 	
 	i = getDistLeft();
     	if(i > WALL) {
 		ryan[row][col].noWall[(facing-1) % 4] = 1;
-	}else{
-        	ryan[row][col].opening >> 1;
-    	}
+	}
 	
 	i = getDistRight();
     	if(i > WALL) {
 		ryan[row][col].noWall[(facing+1) % 4] = 1;
-	}else{
-        	ryan[row][col].opening >> 1;
-    	}
+	}
     	//when a new square is entered, there is never a wall behind (except at the beginning)
         if(row!=startRow && col!=startCol)ryan[row][col].noWall[(facing+2) % 4] = 1;
 }
