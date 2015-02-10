@@ -62,8 +62,7 @@ void discover(int dir, int row, int col){
 	if(ryan[row][col].noWall[EAST] &&  
 	!(dir & WEST)) { //if you just went WEST (came from the EAST), don't go east til last(backtracking direction)
 	        if(!path_found)critPathArr[path_size] = EAST;
-	        
-	        ryan[row][col].opening >> 1;
+
 		move(EAST);
 		discover(EAST, ++row,col);
 	}
@@ -91,7 +90,6 @@ void discover(int dir, int row, int col){
 	!(dir & NORTH)) {
 		if(!path_found)critPathArr[path_size] = SOUTH;
 		
-		ryan[row][col].opening >> 1;
 		move(SOUTH);
 		discover(SOUTH, row,--col);
 	}
