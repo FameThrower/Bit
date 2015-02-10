@@ -36,7 +36,6 @@ void init(){
 			ryan[i][x].noWall[SOUTH] = 0;
 			ryan[i][x].noWall[EAST] = 0;
 			ryan[i][x].noWall[WEST] = 0;
-			ryan[i][x].opening = FOUR_DIR;
 			ryan[i][x].newSquare = 1;
 		}
 	}
@@ -99,7 +98,8 @@ void discover(int dir, int row, int col){
 	
 	//backtracking if there are no more squares to explore from the current square, 
 	//and moves up the recursion stack
-	if(!path_found)path_size--; //this square is not part of the critical path since it
+	if(!path_found)path_size--; //this square is not part of the critical path since you backtrack from it
+				    //before the critical path is found
 	move((dir + 2) % 4);
 	
 }
