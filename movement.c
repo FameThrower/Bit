@@ -64,7 +64,7 @@ void discover(int dir, int row, int col){
 	        if(!path_found)critPathArr[path_size] = EAST;
 
 		move(EAST);
-		discover(EAST, ++row,col);
+		discover(EAST,row,col+1);
 	}
 	
 	//moving NORTH
@@ -73,7 +73,7 @@ void discover(int dir, int row, int col){
 		if(!path_found)critPathArr[path_size] = NORTH;
 		
 		move(NORTH);
-		discover(NORTH, row,--col);
+		discover(NORTH, row-1,col);
 	}
 	
 	//moving WEST
@@ -82,7 +82,7 @@ void discover(int dir, int row, int col){
 		if(!path_found)critPathArr[path_size] = WEST;
 		
 		move(WEST);
-		discover(WEST, --row,col);	
+		discover(WEST, row,col-1);	
 	}
 	
 	//moving SOUTH
@@ -91,7 +91,7 @@ void discover(int dir, int row, int col){
 		if(!path_found)critPathArr[path_size] = SOUTH;
 		
 		move(SOUTH);
-		discover(SOUTH, row,++col);
+		discover(SOUTH, row+1,col);
 	}
 	
 	//backtracking if there are no more squares to explore from the current square, 
