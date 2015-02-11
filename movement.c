@@ -13,12 +13,26 @@
 
 //starting and ending squares (changed from 7 and 1 to 6 and 0 instead to make array stuff easier)
 #define startRow	6              //this is numbered like the maze will be, with a 1 in the upper left
-#define startCol	6  	       //and 49 in the lower right. I decided to count from 0 though, its just
-#define endRow		0  	       //easier
+#define startCol	6  	       //and 49 in the lower right. Its like in Windows people!
+#define endRow		0  	       //I decided to count from 0 though, its just easier
 #define endCol		0  
 
 #define WALL		6  //largest dist to wall in inches
 #define SQUARE		12 //distance from one square to the next in inches
+ 
+//prototypin'
+void init();
+void discover(int dir, int row, int col);
+void isWall(int row, int col);
+int getDistFront(void);
+int getDistLeft(void);
+int getDistRight(void);
+void moveForward(void);
+void turnCW(void);
+void turnCCW(void);
+void turnAround(void);
+int move(int direction);
+void takeCriticalPath(void);
 
 struct ryans{
 	int noWall[4]; //north = 0, east = 1, south = 2, west = 3
