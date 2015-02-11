@@ -42,7 +42,9 @@ void init(){
 	for(i = 0; i < 50; i++){
 		critPathArr[i] = -1;	
 	}
-	path_size = 0;
+	path_size = -1; // starts at -1 for ease of incrementing in discover()
+	path_found = 0;
+	
 }
 
 //used for PART 1 of the maze - searching
@@ -55,12 +57,12 @@ void discover(int dir, int row, int col){
 	
 	if(ryan[row][col].newSquare == 1){ //robot has not been to this square before, so check for walls
 		isWall(row,col);
-		ryan[row][col].newSquare == 0;
+		ryan[row][col].newSquare = 0;
 	}
 	
 	//moving EAST
 	if(ryan[row][col].noWall[EAST] &&  
-	!(dir & WEST)) { //if you just went WEST (came from the EAST), don't go east til last(backtracking direction)
+	(dir != WEST)) { //if you just went WEST (came from the EAST), don't go east til last(backtracking direction)
 	        if(!path_found)critPathArr[path_size] = EAST;
 
 		move(EAST);
@@ -69,7 +71,7 @@ void discover(int dir, int row, int col){
 	
 	//moving NORTH
 	if(ryan[row][col].noWall[NORTH] && 
-	!(dir & SOUTH)) {//if you just went SOUTH (came from the NORTH), don't go east (backtracking direction)
+	(dir != SOUTH)) {//if you just went SOUTH (came from the NORTH), don't go east (backtracking direction)
 		if(!path_found)critPathArr[path_size] = NORTH;
 		
 		move(NORTH);
@@ -78,7 +80,7 @@ void discover(int dir, int row, int col){
 	
 	//moving WEST
 	if(ryan[row][col].noWall[WEST] && 
-	!(dir & EAST)) {
+	(dir != EAST)) {
 		if(!path_found)critPathArr[path_size] = WEST;
 		
 		move(WEST);
@@ -87,7 +89,7 @@ void discover(int dir, int row, int col){
 	
 	//moving SOUTH
 	if(ryan[row][col].noWall[SOUTH] && 
-	!(dir & NORTH)) {
+	(dir != NORTH)) {
 		if(!path_found)critPathArr[path_size] = SOUTH;
 		
 		move(SOUTH);
@@ -205,7 +207,7 @@ int main(){
 	
 	//wait here until a button on the robot is pushed
 	
-	discover(2, startRow,startCol);
+	discover(0, startRow,startCol);
 
 	//wait here until the button is pushed again
 	
