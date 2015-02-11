@@ -1,3 +1,8 @@
+//TODO: Green LED light at the beginning square, Red LED light at the end square
+//	Find easy way to switch from different size mazes (5x5 and 6x6) start from an outside square, so
+//	cant just make general code to fit all mazes
+//	sensors, PSoC communication......
+
 #include<stdio.h>
 #include<stdlib.h>
 
@@ -6,10 +11,11 @@
 #define EAST		1		  //		2				 
 #define WEST		3
 
-#define startRow	7  //start row
-#define startCol	7  //start column
-#define endRow		1  //end row
-#define endCol		1  //end col
+//starting and ending squares (changed from 7 and 1 to 6 and 0 instead to make array stuff easier)
+#define startRow	6              //this is numbered like the maze will be, with a 1 in the upper left
+#define startCol	6  	       //and 49 in the lower right. I decided to count from 0 though, its just
+#define endRow		0  	       //easier
+#define endCol		0  
 
 #define WALL		6  //largest dist to wall in inches
 #define SQUARE		12 //distance from one square to the next in inches
@@ -18,9 +24,14 @@ struct ryans{
 	int noWall[4]; //north = 0, east = 1, south = 2, west = 3
 
 	char newSquare; //first time entering new square, so use sensors to determine wall placement
+	                //also used in critical path determination
 };
 
-int critPathArr[50]; //used for determining critical path
+//used for determining critical path. squares are added as the robot finds them, then
+//increments path_size. if the robot backtracks to a previously traversed square
+// (newSquare == 0) before the critical path is found (path_found == 0), 
+//then path_size is decremented, which removes the square from the critical path
+int critPathArr[50]; 
 int path_size;
 char path_found; //boolean used to stop looking for critical path once the endRow,endCol is reached
 
@@ -42,7 +53,7 @@ void init(){
 	for(i = 0; i < 50; i++){
 		critPathArr[i] = -1;	
 	}
-	path_size = -1; // starts at -1 for ease of incrementing in discover()
+	path_size = -1; // starts at -1 for ease of incrementing in discover() (really starts at 0)
 	path_found = 0;
 	
 }
@@ -51,7 +62,10 @@ void init(){
 void discover(int dir, int row, int col){
 
 	if(row==endRow && col==endCol){ //end square reached, so stop searching for critical path
-		path_found == 1;	
+		path_found = 1;
+		critPathArr[path_size + 1] = -1; //ensures that the robot stops at the correct number of path moves
+						 //since its possible to have a positive number after this in the
+						 //case of a long dead end path
 	}
 	if(!path_found)path_size++; //go to next 
 	
@@ -103,6 +117,8 @@ void discover(int dir, int row, int col){
 	move((dir + 2) % 4);
 	
 }
+
+//used for PART 2 of the maze - critical path
 void takeCriticalPath(void){
 	int i = 0;
 	while(critPathArr[i] >= 0){ // a -1 means the path is over
