@@ -62,6 +62,7 @@ void init(){
 void discover(int dir, int row, int col){
 
 	if(row==endRow && col==endCol){ //end square reached, so stop searching for critical path
+		//LIGHT A RED LED HERE!
 		path_found = 1;
 		critPathArr[path_size + 1] = -1; //ensures that the robot stops at the correct number of path moves
 						 //since its possible to have a positive number after this in the
@@ -220,6 +221,7 @@ int getDistRight(void){
 
 int main(){
 	init();
+	//LIGHT A GREEN LED HERE!
 	
 	//wait here until a button on the robot is pushed
 	
