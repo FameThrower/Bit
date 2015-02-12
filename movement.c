@@ -23,16 +23,19 @@
 //prototypin'
 void init();
 void discover(int dir, int row, int col);
+void takeCriticalPath(void);
+
+int move(int direction);
+void turnCW(void);
+void turnCCW(void);
+void turnAround(void);
+void moveForward(void);
+
 void isWall(int row, int col);
 int getDistFront(void);
 int getDistLeft(void);
 int getDistRight(void);
-void moveForward(void);
-void turnCW(void);
-void turnCCW(void);
-void turnAround(void);
-int move(int direction);
-void takeCriticalPath(void);
+
 
 struct ryans{
 	int noWall[4]; //north = 0, east = 1, south = 2, west = 3
@@ -48,7 +51,6 @@ struct ryans{
 int critPathArr[50]; 
 int path_size;
 char path_found; //boolean used to stop looking for critical path once the endRow,endCol is reached
-
 
 int facing = NORTH; //robot starts the maze facing NORTH
 struct ryans ryan[7][7];
@@ -69,7 +71,6 @@ void init(){
 	}
 	path_size = -1; // starts at -1 for ease of incrementing in discover() (really starts at 0)
 	path_found = 0;
-	
 }
 
 //used for PART 1 of the maze - searching
@@ -100,7 +101,7 @@ void discover(int dir, int row, int col){
 	
 	//moving NORTH
 	if(ryan[row][col].noWall[NORTH] && 
-	(dir != SOUTH)) {//if you just went SOUTH (came from the NORTH), don't go east (backtracking direction)
+	(dir != SOUTH)) {//if you just went SOUTH (came from the NORTH), don't go north (backtracking direction)
 		if(!path_found)critPathArr[path_size] = NORTH;
 		
 		move(NORTH);
@@ -109,7 +110,7 @@ void discover(int dir, int row, int col){
 	
 	//moving WEST
 	if(ryan[row][col].noWall[WEST] && 
-	(dir != EAST)) {
+	(dir != EAST)) {//if you just went EAST(came from the WEST), don't go west(backtracking direction)
 		if(!path_found)critPathArr[path_size] = WEST;
 		
 		move(WEST);
@@ -118,7 +119,7 @@ void discover(int dir, int row, int col){
 	
 	//moving SOUTH
 	if(ryan[row][col].noWall[SOUTH] && 
-	(dir != NORTH)) {
+	(dir != NORTH)) {//if you just went NORTH (came from the SOUTH), don't go south (backtracking direction)
 		if(!path_found)critPathArr[path_size] = SOUTH;
 		
 		move(SOUTH);
@@ -130,7 +131,6 @@ void discover(int dir, int row, int col){
 	if(!path_found)path_size--; //this square is not part of the critical path since you backtrack from it
 				    //before the critical path is found
 	move((dir + 2) % 4);
-	
 }
 
 //used for PART 2 of the maze - critical path
