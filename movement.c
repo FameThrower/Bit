@@ -1,6 +1,5 @@
 //TODO: Green LED light at the beginning square, Red LED light at the end square
-//	Find easy way to switch from different size mazes (5x5 and 6x6) start from an outside square, so
-//	cant just make general code to fit all mazes
+//	Change maze_size variable using switch/button
 //	sensors, PSoC communication......
 
 #include<stdio.h>
@@ -10,12 +9,6 @@
 #define SOUTH		2		  //	3		1
 #define EAST		1		  //		2				 
 #define WEST		3
-
-//starting and ending squares (changed from 7 and 1 to 6 and 0 instead to make array stuff easier)
-#define startRow	6              //this is numbered like the maze will be, with a 1 in the upper left
-#define startCol	6  	       //and 49 in the lower right. Its like in Windows people!
-#define endRow		0  	       //I decided to count from 0 though, its just easier
-#define endCol		0  
 
 #define WALL		6  //largest dist to wall in inches
 #define SQUARE		12 //distance from one square to the next in inches
@@ -53,7 +46,20 @@ int path_size;
 char path_found; //boolean used to stop looking for critical path once the endRow,endCol is reached
 
 int facing = NORTH; //robot starts the maze facing NORTH
+
+//we need to change this with a switch/button
+int maze_size = 5; //5, 6, or 7 for length and width of the maze. This number determines 
+		   //the starting and ending squares
+
+//this is numbered like the maze will be, with a 1 in the upper left
+//and 49 in the lower right. Its like in Windows people!
+//I decided to count from 0 though, its just easier
 struct ryans ryan[7][7];
+int endRow; //these change depending on the maze_size
+int endCol; 
+int startRow = 6; //always starts in the same row
+int startCol;
+
 
 void init(){
 	int i,x;
@@ -71,6 +77,21 @@ void init(){
 	}
 	path_size = -1; // starts at -1 for ease of incrementing in discover() (really starts at 0)
 	path_found = 0;
+	
+	
+	if(maze_size == 5){ //starts in square 48(outside the maze), ends in square 9.
+		startCol = 5;
+		endRow = 1;
+		endCol = 1;
+	}else if(maze_size == 6){ //starts in square 48(outside the maze), ends in square 1
+		startCol = 5;
+		endRow = 0;
+		endCol = 0;
+	}else{ //size = 7, so starts in square 49 and ends in square 1
+		startCol = 6;
+		endRow = 0;
+		endCol = 0;
+	}
 }
 
 //used for PART 1 of the maze - searching
@@ -130,7 +151,10 @@ void discover(int dir, int row, int col){
 	//and moves up the recursion stack
 	if(!path_found)path_size--; //this square is not part of the critical path since you backtrack from it
 				    //before the critical path is found
-	move((dir + 2) % 4);
+	if(row!=startRow || col!=startCol){ //prevents backtracking from the initial square, which would make the 
+					   // robot go south into a wall
+		move((dir + 2) % 4);
+	}
 }
 
 //used for PART 2 of the maze - critical path
