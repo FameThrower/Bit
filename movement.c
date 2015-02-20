@@ -5,13 +5,20 @@
 #include<stdio.h>
 #include<stdlib.h>
 
+#include "ROBOTlib.h" //this brings in the functions fwd(distance,speed), bwd(distance,speed), 
+		     //right(), and left(), cw(degrees, velocity),ccw(float,velocity),turnLED(1=OFF, 0=ON), 
+		     //test_drive(), test_sonar()
+
 #define NORTH		0       	  //		0
 #define SOUTH		2		  //	3		1
 #define EAST		1		  //		2				 
 #define WEST		3
 
+#define ROBOT_SPEED     8.0 //in inches per second. used in moveForward() to move to the next square
+#define TURN_SPEED      4.0 //in inches per second. this is only used for turnAround(), because the default
+			    //for 90 degree turns right and left in the PSoC is 4 inches per second
 #define WALL		6  //largest dist to wall in inches
-#define SQUARE		12 //distance from one square to the next in inches
+#define SQUARE		12.0 //distance from one square to the next in inches
  
 //prototypin'
 void init();
@@ -25,9 +32,9 @@ void turnAround(void);
 void moveForward(void);
 
 void isWall(int row, int col);
-int getDistFront(void);
-int getDistLeft(void);
-int getDistRight(void);
+double getDistFront(void);
+double getDistLeft(void);
+double getDistRight(void);
 
 
 struct ryans{
@@ -96,6 +103,8 @@ void init(){
 
 //used for PART 1 of the maze - searching
 void discover(int dir, int row, int col){
+	/***probably need a routine here to correct the robot's ENGEL to be parallel with the walls***/
+
 
 	if(row==endRow && col==endCol){ //end square reached, so stop searching for critical path
 		//LIGHT A RED LED HERE!
@@ -104,7 +113,7 @@ void discover(int dir, int row, int col){
 						 //since its possible to have a positive number after this in the
 						 //case of a long dead end path
 	}
-	if(!path_found)path_size++; //go to next 
+	if(!path_found)path_size++; //go to next critical path square
 	
 	if(ryan[row][col].newSquare == 1){ //robot has not been to this square before, so check for walls
 		isWall(row,col);
@@ -195,28 +204,24 @@ int move(int direction){
 
 //turn 90 degrees right, then update facing variable 
 void turnCW(void){	
-	
-	
+	right(); //this is from ROBOTlib.c
 	facing = (facing+1) % 4;
 }
 
 //turn 90 degrees left, then update facing variable 
 void turnCCW(void){
-	
-	
+	left(); //this is from ROBOTlib.c
 	facing = (facing-1) % 4;
 }
 
 //turn 180 degrees, then update facing variable
 void turnAround(void){
-	
-	
+	cw(180.0,TURN_SPEED); //from ROBOTlib.c
 	facing = (facing+2) % 4;
 }
 
 void moveForward(void){ //move 12 inches forward
-	
-	
+	fwd(SQUARE, ROBOT_SPEED);
 }
 
 //determines if a wall exists to the front, left, and right of the robot
@@ -241,19 +246,19 @@ void isWall(int row, int col){
         if(row!=startRow && col!=startCol)ryan[row][col].noWall[(facing+2) % 4] = 1;
 }
 
-//uses sensor on the front of the robot and returns distance to nearest wall
+//uses sensor on the front of the robot and returns distance to nearest wall (in inches??)
 //direction = facing
-int getDistFront(void){
+double getDistFront(void){
 	return 0;
 }
 //uses sensor on the robot's left side and returns distance to nearest wall
 //direction = (facing - 1) % 4
-int getDistLeft(void){
+double getDistLeft(void){
 	return 0;
 }
 //uses sensor on the robot's right side and returns distance to nearest wall
 //direction = (facing + 1) % 4
-int getDistRight(void){
+double getDistRight(void){
 	return 0;
 }
 
