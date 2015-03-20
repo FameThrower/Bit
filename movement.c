@@ -1,6 +1,9 @@
 //TODO: Green LED light at the beginning square, Red LED light at the end square
 //	Change maze_size variable using switch/button
+//	just added errorCorrection() function for after turns maybe? its not finished so ya
 //	sensors, PSoC communication......
+// I'm using getDistRight(),left,and front and these are not actually functions from the sonar stuff yet. So this
+//   won't compile
 
 #include<stdio.h>
 #include<stdlib.h>
@@ -30,6 +33,7 @@ void turnCW(void);
 void turnCCW(void);
 void turnAround(void);
 void moveForward(void);
+void errorCorrection(void);
 
 void isWall(int row, int col);
 double getDistFront(void);
@@ -108,6 +112,7 @@ void discover(int dir, int row, int col){
 
 	if(row==endRow && col==endCol){ //end square reached, so stop searching for critical path
 		//LIGHT A RED LED HERE!
+		
 		path_found = 1;
 		critPathArr[path_size + 1] = -1; //ensures that the robot stops at the correct number of path moves
 						 //since its possible to have a positive number after this in the
@@ -222,6 +227,20 @@ void turnAround(void){
 
 void moveForward(void){ //move 12 inches forward
 	fwd(SQUARE, ROBOT_SPEED);
+}
+
+void errorCorrection(void){
+	int leftWall;
+	int rightWall;
+	rightWall = getDistRight();
+	leftWall = getDistLeft();
+	
+	if(rightWall < leftWall){ //rotate a bit left
+		
+	}
+	else if(leftWall < rightWall){ //rotate a bit right
+		
+	}
 }
 
 //determines if a wall exists to the front, left, and right of the robot
