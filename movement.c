@@ -2,16 +2,15 @@
 //	Change maze_size variable using switch/button
 //	just added errorCorrection() function for after turns maybe? its not finished so ya
 //	sensors, PSoC communication......
-// I'm using getDistRight(),left,and front and these are not actually functions from the sonar stuff yet. So this
-//   won't compile
+// Need to switch over to cm
 
 #include<stdio.h>
 #include<stdlib.h>
 
 #include "ROBOTlib.h" //this brings in the functions fwd(distance,speed), bwd(distance,speed), 
-		     //right(), and left(), cw(degrees, velocity),ccw(float,velocity),turnLED(1=OFF, 0=ON), 
+		     //right(), and left(), cw(degrees, velocity),ccw(float,velocity),turnLED(1=On, 0=Off), 
 		     //test_drive(), test_sonar()
-
+#include "srf02.h" //brings in get_srf02_range_f(), brings in get_srf02_range_r(), brings in get_srf02_range_l()
 #define NORTH		0       	  //		0
 #define SOUTH		2		  //	3		1
 #define EAST		1		  //		2				 
@@ -20,8 +19,9 @@
 #define ROBOT_SPEED     8.0 //in inches per second. used in moveForward() to move to the next square
 #define TURN_SPEED      4.0 //in inches per second. this is only used for turnAround(), because the default
 			    //for 90 degree turns right and left in the PSoC is 4 inches per second
-#define WALL		6  //largest dist to wall in inches
+#define WALL		6  //largest dist to wall in inches, need to change to cm 
 #define SQUARE		12.0 //distance from one square to the next in inches
+#define SQUARE_CM	30.48
  
 //prototypin'
 void init();
@@ -36,9 +36,9 @@ void moveForward(void);
 void errorCorrection(void);
 
 void isWall(int row, int col);
-double getDistFront(void);
-double getDistLeft(void);
-double getDistRight(void);
+int getDistFront(void);
+int getDistLeft(void);
+int getDistRight(void);
 
 
 struct ryans{
@@ -267,18 +267,18 @@ void isWall(int row, int col){
 
 //uses sensor on the front of the robot and returns distance to nearest wall (in inches??)
 //direction = facing
-double getDistFront(void){
-	return 0;
+int getDistFront(void){
+	return get_srf02_range_f(); //this function from srf02.h
 }
 //uses sensor on the robot's left side and returns distance to nearest wall
 //direction = (facing - 1) % 4
-double getDistLeft(void){
-	return 0;
+int getDistLeft(void){
+       	return	get_srf02_range_l(); //this function from srf02.h
 }
 //uses sensor on the robot's right side and returns distance to nearest wall
 //direction = (facing + 1) % 4
-double getDistRight(void){
-	return 0;
+int getDistRight(void){
+	return get_srf02_range_r; //this function from srf02.h
 }
 
 int main(){
