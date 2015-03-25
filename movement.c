@@ -173,6 +173,7 @@ void discover(int dir, int row, int col){
 
 //used for PART 2 of the maze - critical path
 void takeCriticalPath(void){
+	facing = 0;
 	int i = 0;
 	while(critPathArr[i] >= 0){ // a -1 means the path is over
 		move(critPathArr[i]);
@@ -190,11 +191,11 @@ void takeCriticalPath(void){
 int move(int direction){
 	if(direction != facing){
 		//direction is 180 degrees from where the robot is facing
-		if(((facing-direction) % 4) == 2){
+		if(((facing+direction) % 4) == 2){
 			turnAround();
 		}
 		//direction is 90 degrees to the right of the robot
-		else if((facing - direction) < 0 || (facing == 3 && direction == 0)){
+		else if(!(facing==0 && direction==3) && ((facing - direction) < 0 || (facing == 3 && direction == 0))){
 			turnCW();
 		//direction is 90 degrees to the left of the robot
 		}else{
@@ -216,7 +217,7 @@ void turnCW(void){
 //turn 90 degrees left, then update facing variable 
 void turnCCW(void){
 	left(); //this is from ROBOTlib.c
-	facing = (facing-1) % 4;
+	facing = (facing+3) % 4;
 }
 
 //turn 180 degrees, then update facing variable
@@ -254,7 +255,7 @@ void isWall(int row, int col){
 	
 	i = getDistLeft();
     	if(i > WALL) {
-		ryan[row][col].noWall[(facing-1) % 4] = 1;
+		ryan[row][col].noWall[(facing+3) % 4] = 1;
 	}
 	
 	i = getDistRight();
